@@ -21,7 +21,3 @@ export const fetchImages = async (searchQuery, quantity) => {
 
   return response;
 };
-
-export default {
-  fetchImages,
-};
