@@ -16,7 +16,11 @@ const ImageGallery = ({ imagesArr, toggleModal }) => {
 };
 
 ImageGallery.propTypes = {
-  imageArr: PropTypes.arrayOf(PropTypes.shape.isRequired),
+  imageArr: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+    })
+  ),
   toggleModal: PropTypes.func.isRequired,
 };
 export default ImageGallery;

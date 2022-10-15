@@ -42,6 +42,7 @@ export class App extends Component{
      this.reset();
      this.setState({queue:data, isLoading:true})
   }
+  
   toggleModal = (bigUrl) => {
     this.setState(
       ({ modalOpen }) => ({

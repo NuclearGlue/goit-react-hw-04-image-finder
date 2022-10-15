@@ -2,23 +2,28 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 export class Modal extends Component {
-  onModalClose = button => {
+  onModalCloseBtn = button => {
     if (button.keyCode === 27) {
       this.props.modalToggle();
     }
   };
+
+  onModalCloseClick = () => {
+    this.props.modalToggle();
+  };
+
   componentDidMount() {
-    window.addEventListener('keydown', this.onModalClose);
+    window.addEventListener('keydown', this.onModalCloseBtn);
   }
 
   componentWillUnmount() {
-    window.removeEventListener('keydown', this.onModalClose);
+    window.removeEventListener('keydown', this.onModalCloseBtn);
   }
 
   render() {
     const image = this.props.imageUrl;
     return (
-      <div className="Overlay">
+      <div className="Overlay" onClick={this.onModalCloseClick}>
         <div className="Modal">
           <img src={image} alt={image} />
         </div>
