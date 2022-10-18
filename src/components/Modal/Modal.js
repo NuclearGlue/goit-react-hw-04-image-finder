@@ -1,38 +1,39 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-export class Modal extends Component {
-  onModalCloseBtn = button => {
+const Modal = ({ imageUrl, modalToggle }) => {
+  const onModalCloseBtn = button => {
     if (button.keyCode === 27) {
-      this.props.modalToggle();
+      modalToggle();
     }
   };
 
-  onModalCloseClick = () => {
-    this.props.modalToggle();
+  const onModalCloseClick = () => {
+    modalToggle();
   };
 
-  componentDidMount() {
-    window.addEventListener('keydown', this.onModalCloseBtn);
-  }
+  useEffect(() => {
+    window.addEventListener('keydown', onModalCloseBtn);
+  }, []);
 
-  componentWillUnmount() {
-    window.removeEventListener('keydown', this.onModalCloseBtn);
-  }
+  useEffect(() => {
+    return () => {
+      window.removeEventListener('keydown', onModalCloseBtn);
+    };
+  }, []);
 
-  render() {
-    const image = this.props.imageUrl;
-    return (
-      <div className="Overlay" onClick={this.onModalCloseClick}>
-        <div className="Modal">
-          <img src={image} alt={image} />
-        </div>
+  return (
+    <div className="Overlay" onClick={onModalCloseClick}>
+      <div className="Modal">
+        <img src={imageUrl} alt={imageUrl} />
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
 Modal.propTypes = {
   imageUrl: PropTypes.string.isRequired,
   modalToggle: PropTypes.func.isRequired,
 };
+
+export default Modal;

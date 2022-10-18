@@ -1,91 +1,94 @@
 import React, { Component } from 'react';
-import { Searchbar } from "./Searchbar/Searchbar";
-import { Modal } from "./Modal/Modal";
+import { useState, useEffect } from "react";
+
+import  Searchbar  from "./Searchbar/Searchbar";
+import  Modal  from "./Modal/Modal";
 import ImageGallery from "./ImageGallery/ImageGallery";
 import Loader from "./Loader/Loader";
 import Button from './Button/Button'
 import { fetchImages } from './helpers/request';
 
-export class App extends Component{
-  state = {
-    quantity: 12,
-    queue:'',
-    images: [],
-    isLoading: false,
-    error: false,
-    modalOpen: false,
-    bigImageUrl:''
-  }
-
-   async componentDidUpdate(prevProps, prevState) {
-    
-     if (this.state.isLoading) {
-      const images=await fetchImages(this.state.queue,this.state.quantity)
-            this.setState({
-       images: images,
-       isLoading:false
-     })
-      }
-  }
+const App =()=>{
   
-  addMoreImages = () => { 
-    this.setState({isLoading:true})
-    const { quantity } = this.state
+    const [quantity, setQuantity] =useState(12)
+    const [queue,setQueue]=useState('')
+    const [images,setImages]=useState([])
+    const [isLoading, setIsLoading]=useState(false)
+    const [modalOpen, setModalOpen] =useState(false)
+    const [bigImageUrl, setBigImageUrl]=useState('')
+  
+
+  useEffect(() => {
+    if (isLoading) {
+     const getImages = async() => {
+       const images = await fetchImages(queue, quantity)
+       setImages(images)
+      }
+      getImages().catch(console.error)
+      setIsLoading(false)
+   }
+  }, [isLoading])
+      
+  
+  
+
+
+
+  const addMoreImages = () => { 
+    setIsLoading(true)
     let number = quantity
     number+=12
-     this.setState({ quantity: number })
-    console.log( this.state.images )
+    setQuantity(number)
+    console.log( images )
     
   }
   
-  handleSubmit = (data) => {
-     this.reset();
-     this.setState({queue:data, isLoading:true})
+  const handleSubmit = (data) => {
+     reset();
+    setQueue(data);
+    setIsLoading(true);
+
+    
   }
   
-  toggleModal = (bigUrl) => {
-    this.setState(
-      ({ modalOpen }) => ({
-        bigImageUrl: bigUrl ? bigUrl : '',
-        modalOpen: !modalOpen
-      })
-    )
+  const toggleModal = (bigUrl) => {
+setBigImageUrl(bigUrl ? bigUrl : '')
+setModalOpen(!modalOpen)
   
 }
 
-   reset = () => {
-    this.setState({
-      quantity: 12,
-    queue:'',
-    images: [],
-    isLoading: false,
-    error: false,
-    modalOpen: false,
-    bigImageUrl:''
-    });
+   const reset = () => {
+     setQuantity(12)
+     setQueue('')
+     setImages([])
+     setIsLoading(false)
+   
+     setModalOpen(false)
+     setBigImageUrl('')
+     
   };
 
-  render() {
-    const {  images, modalOpen,bigImageUrl,isLoading } = this.state
+ 
+  
     
     return (
       
     <div
      className='App'
       >
-        <Searchbar onSubmit={this.handleSubmit} />
+        <Searchbar onSubmit={handleSubmit} />
         {isLoading&&<Loader/>}
         {images.length !== 0 &&
           <>
-          <ImageGallery imagesArr={images} toggleModal={this.toggleModal} />
-        <Button onClick={this.addMoreImages} />
-          {modalOpen && (<Modal imageUrl={bigImageUrl} modalToggle={this.toggleModal} />)}
-        </>
-        
-         
+          <ImageGallery imagesArr={images} toggleModal={toggleModal} />
+        <Button onClick={addMoreImages} />
+          {modalOpen && (<Modal imageUrl={bigImageUrl} modalToggle={toggleModal} />)}
+        </>  
       }
     </div>
   );
     
-  }
+  
 };
+
+export default App;
