@@ -8,22 +8,30 @@ const Modal = ({ imageUrl, modalToggle }) => {
     }
   };
 
-  const onModalCloseClick = () => {
-    modalToggle();
+  const onModalCloseClick = event => {
+    if (event.target.classList.contains('Overlay')) {
+      modalToggle();
+    } else {
+      return;
+    }
   };
 
   useEffect(() => {
-    window.addEventListener('keydown', onModalCloseBtn);
-  }, []);
-
-  useEffect(() => {
-    return () => {
-      window.removeEventListener('keydown', onModalCloseBtn);
+    const onModalCloseBtn = button => {
+      if (button.keyCode === 27) {
+        modalToggle();
+      }
     };
-  }, []);
+
+    if (modalToggle) {
+      window.addEventListener('keydown', onModalCloseBtn);
+    } else {
+      window.removeEventListener('keydown', onModalCloseBtn);
+    }
+  }, [modalToggle]);
 
   return (
-    <div className="Overlay" onClick={onModalCloseClick}>
+    <div className="Overlay" onClick={event => onModalCloseClick(event)}>
       <div className="Modal">
         <img src={imageUrl} alt={imageUrl} />
       </div>
